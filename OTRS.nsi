@@ -35,7 +35,7 @@
 !define OTRS_Name            "OTRS"
 !define OTRS_Version_Major "3"
 !define OTRS_Version_Minor "3"
-!define OTRS_Version_Patch "5"
+!define OTRS_Version_Patch "7"
 !define OTRS_Version_Jointer ""
 !define OTRS_Version_Postfix ""
 !define OTRS_Company         "OTRS Group"
@@ -1065,7 +1065,7 @@ Function InstInstallationDirValidate
         ${Else}
             # On 32-bit systems check just Program Files
             ${StrStr} $1 "$INSTDIR" "$PROGRAMFILES"
-            StrCpy $3 ''
+            StrCpy $2 ''
         ${EndIf}
 
         # StrStr returns an empty string if there was no match
