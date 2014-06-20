@@ -26,7 +26,7 @@
 !define Installer_Home_Nsis       "${Installer_Home}\otrs4win"
 !define Installer_Version_Major   3
 !define Installer_Version_Minor   0
-!define Installer_Version_Patch   5
+!define Installer_Version_Patch   6
 #!define Installer_Version_Jointer "-"
 #!define Installer_Version_Postfix "rc1"
 !define Installer_Version_Jointer ""
@@ -367,28 +367,6 @@ Section -InstPerl
 
 SectionEnd
 
-# install CRONw section
-Section -InstCRONw
-
-    # install CRONw files
-    SetOutPath $INSTDIR
-    File /r "${Installer_Home}\CRONw"
-
-    # configure CRONw
-    GetFullPathName /SHORT $InstallDirShort $INSTDIR
-    NSExec::ExecToLog "$\"$PerlExe$\" $\"$INSTDIR\OTRS\bin\otrs.Cron4Win32.pl$\" $\"$InstallDirShort\CRONw\crontab.txt$\""
-
-    # register CRONw as service
-    NSExec::ExecToLog "$\"$PerlExe$\" $\"$INSTDIR\CRONw\cronHelper.pl$\" --install"
-
-    # remove the helper script
-    ${If} $InstallMode != "Unittest"
-        sleep 1000  # sleep one second to give the OS time to unlock the file
-        Delete /REBOOTOK "$INSTDIR\otrs4win\Scripts\ConfigureCRONw.pl"
-    ${EndIf}
-
-SectionEnd
-
 # install MySQL section
 Section /o -InstMySQL InstMySQL
 
@@ -496,6 +474,13 @@ Section -InstOTRS
     # write permission on OTRS subfolder - Full Control for 'Users' group
     AccessControl::GrantOnFile "$INSTDIR\OTRS" "(S-1-5-32-545)" "FullAccess"
 
+    # we need to set rights for the temp dir
+    # because CGI is uploading CGITemp files there
+    # and otrs needs to be able to remove these
+    # temp files (bug#10522)
+    ${GetRoot} $PROGRAMFILES $R0
+    AccessControl::GrantOnFile "$R0\Windows\Temp" "(S-1-5-32-545)" "FullAccess"
+
     # configure OTRS
     GetFullPathName /SHORT $InstallDirShort $INSTDIR
 
@@ -569,6 +554,21 @@ Section -InstOTRS
         sleep 1000  # sleep one second to give the OS time to unlock the file
         Delete /REBOOTOK "$INSTDIR\otrs4win\Scripts\ConfigureOTRS.pl"
     ${EndIf}
+
+SectionEnd
+
+# install CRONw section
+Section -InstCRONw
+
+    # install CRONw files
+    SetOutPath $INSTDIR
+    File /r "${Installer_Home}\CRONw"
+
+    # configure CRONw
+    NSExec::ExecToLog "$\"$PerlExe$\" $\"$INSTDIR\OTRS\bin\otrs.Cron4Win32.pl$\" $\"$INSTDIR\CRONw\crontab.txt$\""
+
+    # register CRONw as service
+    NSExec::ExecToLog "$\"$PerlExe$\" $\"$INSTDIR\CRONw\cronHelper.pl$\" --install"
 
 SectionEnd
 
