@@ -35,7 +35,7 @@
 !define OTRS_Name            "OTRS"
 !define OTRS_Version_Major "3"
 !define OTRS_Version_Minor "3"
-!define OTRS_Version_Patch "7"
+!define OTRS_Version_Patch "8"
 !define OTRS_Version_Jointer ""
 !define OTRS_Version_Postfix ""
 !define OTRS_Company         "OTRS Group"
@@ -473,13 +473,6 @@ Section -InstOTRS
 
     # write permission on OTRS subfolder - Full Control for 'Users' group
     AccessControl::GrantOnFile "$INSTDIR\OTRS" "(S-1-5-32-545)" "FullAccess"
-
-    # we need to set rights for the temp dir
-    # because CGI is uploading CGITemp files there
-    # and otrs needs to be able to remove these
-    # temp files (bug#10522)
-    ${GetRoot} $PROGRAMFILES $R0
-    AccessControl::GrantOnFile "$R0\Windows\Temp" "(S-1-5-32-545)" "FullAccess"
 
     # configure OTRS
     GetFullPathName /SHORT $InstallDirShort $INSTDIR

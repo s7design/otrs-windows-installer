@@ -1,9 +1,6 @@
-3.0.6 2014-??-??
+3.0.6 2014-06-24
 - Fixed bug#10564 - windows Installer failure - Program Files directory validation.
-- Fixed bug#10514 - Fresh installation of otrs 3.3.7 win32 does not work, because of installer/path problem-loop.
-- Fixed bug#10474 - Installer Windows Directory.
 - Fixed bug#10488 - when some one sends an email to the system. System does not send email back to customer.
-- Fixed bug#10522 - HTTP 500 error when uploading attachments to ticket on Windows.
 
 3.0.5 2014-04-08
 - Fixed bug#10206 - Escalation notification emails are suddenly sent out by Generic Agent after OTRS Update.
